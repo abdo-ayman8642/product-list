@@ -13,6 +13,11 @@ export interface IProduct {
   };
 }
 
+export interface ICartItem extends Omit<IProduct, 'price'> {
+  price: number;
+  quantity: number;
+}
+
 export interface IFormInput {
   id: string;
   name: ProductNameTypes;

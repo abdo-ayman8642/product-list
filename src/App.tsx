@@ -12,6 +12,8 @@ import { productValidation } from "./validation";
 import Select from "./components/ui/Select";
 import { ProductNameTypes } from "./types";
 import toast, { Toaster } from "react-hot-toast";
+import { useCartStore } from "./store/useCartStore";
+import CartDrawer from "./components/Cart";
 
 const App = () => {
   const defaultProductObj = {
@@ -25,7 +27,7 @@ const App = () => {
       imageURL: "",
     },
   };
-  /* ------- STATE -------  */
+
   const [products, setProducts] = useState<IProduct[]>(productList);
   const [product, setProduct] = useState<IProduct>(defaultProductObj);
   const [productToEdit, setProductToEdit] = useState<IProduct>(defaultProductObj);
@@ -36,6 +38,9 @@ const App = () => {
   const [isOpenEditModal, setIsOpenEditModal] = useState(false);
   const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+
+  const [open, setOpen] = useState(false);
+  const { items } = useCartStore();
 
   /* ------- HANDLER -------  */
   const closeModal = () => setIsOpen(false);
@@ -209,14 +214,29 @@ const App = () => {
   };
 
   return (
-    <main className="container">
+    <main className="p-10">
+      <div className="flex justify-end gap-2 w-full my-10">
       <Button
-        className="block bg-indigo-700 hover:bg-indigo-800 mx-auto my-10 px-10 font-medium"
+        className="block bg-indigo-700 hover:bg-indigo-800  p-6 font-medium"
         onClick={openModal}
         width="w-fit"
       >
         Build a Product
       </Button>
+
+      <button onClick={() => setOpen(true)} className="relative">
+          🛒
+          {items.length > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full text-xs px-1">
+              {items.length}
+            </span>
+          )}
+        </button>
+
+
+      <CartDrawer open={open} onClose={() => setOpen(false)} />
+      </div>
+     
 
       <div className="m-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-4 p-2 rounded-md">
         {renderProductList}
