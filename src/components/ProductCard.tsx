@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { IProduct } from "../interfaces";
 import { useCartStore } from "../store/useCartStore";
 import { numberWithCommas, txtSlicer } from "../utils/functions";
@@ -22,26 +23,38 @@ const ProductCard = ({
   setProductToEditIdx,
   openConfirmModal,
 }: IProps) => {
-  const { title, description, imageURL, price, colors, category } = product;
+  const { title, description, imageURL, price, colors, category ,id} = product;
    const { addToCart } = useCartStore();
 
   /* ------- RENDER -------  */
   const renderProductColors = colors.map(color => <CircleColor key={color} color={color} />);
 
+
+
+  const onAdd = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation()
+     e.preventDefault(); // ✅ stops <Link> navigation
+    addToCart(product)
+  };
+
   /* ------- HANDLER -------  */
-  const onEdit = () => {
+  const onEdit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation()
+     e.preventDefault(); // ✅ stops <Link> navigation
     setProductToEdit(product);
     openEditModal();
     setProductToEditIdx(idx);
   };
 
-  const onRemove = () => {
+  const onRemove = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation()
+     e.preventDefault(); // ✅ stops <Link> navigation
     setProductToEdit(product);
     openConfirmModal();
   };
 
   return (
-    <div className="max-w-sm md:max-w-lg mx-auto md:mx-0 border rounded-md p-2 flex flex-col space-y-3">
+    <Link to={`/products/${id}`} className="max-w-sm md:max-w-lg mx-auto md:mx-0 border rounded-md p-2 flex flex-col space-y-3">
       <Image imageURL={imageURL} alt={"Product Name"} className="rounded-md h-52 w-full lg:object-cover" />
 
       <h3 className="text-lg font-semibold">{txtSlicer(title, 25)}</h3>
@@ -60,7 +73,7 @@ const ProductCard = ({
       </div>
 
       <div className="flex items-center justify-between gap-2">
-        <Button className="bg-green-700 hover:bg-green-800" onClick={()=>addToCart(product)}>
+        <Button className="bg-green-700 hover:bg-green-800" onClick={onAdd}>
           Add
         </Button>
 
@@ -71,7 +84,7 @@ const ProductCard = ({
           Remove
         </Button>
       </div>
-    </div>
+    </Link>
   );
 };
 
